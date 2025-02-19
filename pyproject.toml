@@ -24,12 +24,17 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "click~=8.1.8"
+]
 
 [project.urls]
 Documentation = "https://github.com/PolyPik/zippo#readme"
 Issues = "https://github.com/PolyPik/zippo/issues"
 Source = "https://github.com/PolyPik/zippo"
+
+[project.scripts]
+zippo = "zippo.__main__:zippo"
 
 [tool.hatch.version]
 path = "zippo/__about__.py"
