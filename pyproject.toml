@@ -46,6 +46,11 @@ extra-dependencies = [
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:zippo tests}"
 
+[tool.hatch.envs.dev]
+dependencies = [
+  "pytest~=8.3.4"
+]
+
 [tool.coverage.run]
 source_pkgs = ["zippo", "tests"]
 branch = true
