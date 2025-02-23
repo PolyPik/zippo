@@ -1,5 +1,5 @@
+import zipfile
 from pathlib import Path, PurePath
-from zipfile import ZIP_DEFLATED, ZipFile
 
 import click
 
@@ -27,7 +27,15 @@ import click
     type=click.Path(file_okay=True, dir_okay=False, writable=True, path_type=Path),
     help='Sets the name of the output file. By default, the filename is that of SRC with a ".zip" extension.',
 )
-def zippo(src: Path, root_directory: str, output_file: Path, *, no_root_dir: bool):
+@click.option(
+    "-c",
+    "--compression",
+    default="STORED",
+    type=click.Choice(["STORED", "DEFLATED", "BZIP2", "LZMA"], case_sensitive=False),
+    callback=lambda _c, _p, v: getattr(zipfile, f"ZIP_{v}"),
+    help='Sets the compression method. By default, the compression method is "STORED".',
+)
+def zippo(src: Path, root_directory: str, output_file: Path, compression: int, *, no_root_dir: bool):
     """
     A tool for creating a zipfile from a directory.
 
@@ -51,7 +59,7 @@ def zippo(src: Path, root_directory: str, output_file: Path, *, no_root_dir: boo
 
     output_file = output_file.with_suffix(".zip")
 
-    with ZipFile(output_file.resolve(), mode="w", compression=ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(output_file.resolve(), mode="w", compression=compression) as zf:
         for arc_path, src_path in file_mappings.items():
             for parent in [f"{p.as_posix()}/" for p in arc_path.parents[:-1]]:
                 if parent not in zf.namelist():

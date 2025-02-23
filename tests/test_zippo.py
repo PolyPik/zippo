@@ -118,3 +118,55 @@ def test_output_file(base_dir, src_dir, output_file):
 
         zip_file_path = Path(td) / ("pin.zip" if output_file else "foo.zip")
         assert zip_file_path.exists()
+
+
+@pytest.mark.parametrize(
+    "compression",
+    [
+        None,
+        "-c STORED",
+        "--compression STORED",
+        "-c DEFLATED",
+        "--compression DEFLATED",
+        "-c BZIP2",
+        "--compression BZIP2",
+        "-c LZMA",
+        "--compression LZMA",
+    ],
+    ids=[
+        "No Opt",
+        "Short Opt STORED",
+        "Long Opt STORED",
+        "Short Opt DEFLATED",
+        "Long Opt DEFLATED",
+        "Short Opt BZIP2",
+        "Long Opt BZIP2",
+        "Short Opt LZMA",
+        "Long Opt LZMA",
+    ],
+)
+def test_compression(base_dir, src_dir, compression):
+    runner = CliRunner()
+    with runner.isolated_filesystem(temp_dir=base_dir) as td:
+        args = []
+
+        expected_method = zipfile.ZIP_STORED
+        if compression:
+            tokens = compression.split(" ")
+            args.extend(list(tokens))
+            expected_method = getattr(zipfile, f"ZIP_{tokens[1]}")
+
+        args.append(str(src_dir.resolve()))
+
+        result = runner.invoke(zippo, args)
+        assert result.exit_code == 0
+
+        zip_file_path = Path(td) / "foo.zip"
+        assert zip_file_path.exists()
+
+        with zipfile.ZipFile(zip_file_path, "r") as zf:
+            for info in zf.infolist():
+                if info.is_dir():
+                    assert info.compress_type == zipfile.ZIP_STORED
+                else:
+                    assert info.compress_type == expected_method
