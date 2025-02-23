@@ -35,7 +35,18 @@ import click
     callback=lambda _c, _p, v: getattr(zipfile, f"ZIP_{v}"),
     help='Sets the compression method. By default, the compression method is "STORED".',
 )
-def zippo(src: Path, root_directory: str, output_file: Path, compression: int, *, no_root_dir: bool):
+@click.option(
+    "-l",
+    "--compress-level",
+    default="1",
+    type=click.Choice(["1", "2", "3", "4", "5", "6", "7", "8", "9"], case_sensitive=False),
+    callback=lambda _c, _p, v: int(v),
+    help="""Sets the level of compression. By default, the compression level is "1".
+    This option only has effect if the compression method is "DEFLATED" or "BZIP2".""",
+)
+def zippo(
+    src: Path, root_directory: str, output_file: Path, compression: int, compress_level: int, *, no_root_dir: bool
+):
     """
     A tool for creating a zipfile from a directory.
 
@@ -59,7 +70,7 @@ def zippo(src: Path, root_directory: str, output_file: Path, compression: int, *
 
     output_file = output_file.with_suffix(".zip")
 
-    with zipfile.ZipFile(output_file.resolve(), mode="w", compression=compression) as zf:
+    with zipfile.ZipFile(output_file.resolve(), mode="w", compression=compression, compresslevel=compress_level) as zf:
         for arc_path, src_path in file_mappings.items():
             for parent in [f"{p.as_posix()}/" for p in arc_path.parents[:-1]]:
                 if parent not in zf.namelist():
