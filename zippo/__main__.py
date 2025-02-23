@@ -48,7 +48,7 @@ def zippo(
     src: Path, root_directory: str, output_file: Path, compression: int, compress_level: int, *, no_root_dir: bool
 ):
     """
-    A tool for creating a zipfile from a directory.
+    This tool creates a zip archive of a filesystem directory.
 
     SRC is the path to the directory containing the files that need to be archived.
     """
