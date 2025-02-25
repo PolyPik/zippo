@@ -5,16 +5,20 @@ build-backend = "hatchling.build"
 [project]
 name = "zippo"
 dynamic = ["version"]
-description = 'A command line tool for creating ZIP files.'
+description = 'A command line tool for creating a ZIP archive of a filesystem directory.'
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
-keywords = []
+keywords = [
+  "zip", "ZIP",
+  "zipfile", "zip_file", "zip-file", "zip file",
+  "ziparchive", "zip_archive", "zip-archive", "zip archive"
+]
 authors = [
   { name = "PolyPik", email = "bighorn_se@yahoo.com" },
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
@@ -23,6 +27,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: System :: Archiving :: Compression"
 ]
 dependencies = [
   "click~=8.1.8"
